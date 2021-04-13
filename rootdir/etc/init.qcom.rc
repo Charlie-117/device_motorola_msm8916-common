@@ -45,14 +45,21 @@ on init
     write /sys/devices/system/cpu/cpu3/online 1
     write /sys/module/msm_thermal/core_control/enabled 1
 
-on fs
+    # wait for bootdevice and symlink early
+    # QSEE rpmb listener need symlink for bootdevice
     wait /dev/block/platform/soc.0/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc.0/${ro.boot.bootdevice} /dev/block/bootdevice
 
-    mount_all /vendor/etc/fstab.qcom --early
-
-    # set up a symbolic link so the many references to the old location still work and the java code can remain platform agnostic.
+    # set up a symbolic link so the many references to the old location still work and the java code can remain platform agnostic
     symlink /dev/block/bootdevice /dev/block/platform/msm_sdcc.1
+
+    # start qseecomd early as we mount /system early
+    # qseecomd needs /dev/block/bootdevice
+    # vold needs keymaster that needs qseecomd
+    start vendor.qseecomd
+
+on fs
+    mount_all /vendor/etc/fstab.qcom --early
 
     mkdir /persist/data 0700  system system
     restorecon_recursive /persist
@@ -79,7 +86,6 @@ on early-boot
     setrlimit 8 67108864 67108864
     write /sys/kernel/boot_adsp/boot 1
 
-    start vendor.qseecomd
     restart vendor.qcamerasvr
 
 on boot
@@ -253,7 +259,8 @@ on post-fs
     # Allow writing to the kernel trace log.
     chmod 0222 /sys/kernel/debug/tracing/trace_marker
 
-    start vendor.qseecomd
+    # Wait qseecomd started
+    wait_for_prop sys.listeners.registered true
 
 # msm specific files that need to be created on /data
 on post-fs-data
