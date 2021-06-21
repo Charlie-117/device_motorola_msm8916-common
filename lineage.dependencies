@@ -18,6 +18,17 @@
   {
     "repository": "android_system_qcom",
     "target_path": "system/qcom"
+  },
+  {
+    "repository": "motorola_cameraone",
+    "target_path": "packages/apps/MotCamera"
+  },
+  {
+    "repository": "motorola_cameraone_overlay",
+    "target_path": "packages/apps/MotCamera-overlay"
+  },
+  {
+    "repository": "motorola_motosignatureapp",
+    "target_path": "packages/apps/MotoSignatureApp"
   }
 ]
-
