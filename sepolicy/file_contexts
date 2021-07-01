@@ -26,6 +26,7 @@
 # Camera
 /sys/devices/virtual/camera(/.*)?                                                           u:object_r:sysfs_camera:s0
 /sys/devices/w1_bus_master1(/.*)?                                                           u:object_r:sysfs_graphics:s0
+/persist/camera(/.*)?                                                                       u:object_r:persist_camera_file:s0
 
 # FSG
 /fsg(/.*)?                                                                                  u:object_r:fsg_file:s0
@@ -58,6 +59,10 @@
 /data/misc/netmgr(/.*)?                                                                     u:object_r:netmgr_data_file:s0
 /dev/socket/cutback                                                                         u:object_r:rild_socket:s0
 /persist/mdm(/.*)?                                                                          u:object_r:persist_modem_file:s0
+
+# PDS filesystem (contained within persist)
+/persist/batt_health(/.*)?                                                                  u:object_r:pds_batt_file:s0
+/persist/public(/.*)?                                                                       u:object_r:pds_public_file:s0
 
 # Sensors
 /dev/akm09912                                                                               u:object_r:sensors_device:s0
